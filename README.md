@@ -22,6 +22,30 @@
 
 ## 🚀 快速开始
 
+### 📦 OpenClaw 用户安装
+
+**详细的 OpenClaw 安装指南：** [docs/INSTALL.md](docs/INSTALL.md)
+
+**快速安装：**
+```bash
+# 1. 下载 Skill
+cd C:\Users\chen\.openclaw\workspace\skills
+git clone https://github.com/chenlibulei/boss-auto-apply.git
+
+# 2. 安装依赖
+cd boss-auto-apply
+pip install -r requirements.txt
+
+# 3. 配置个人信息
+cp config/user_config.example.json config/user_config.json
+# 编辑 user_config.json
+
+# 4. 开始使用
+python scripts/boss_auto_apply.py --mode test --count 5
+```
+
+---
+
 ### 1. 安装依赖
 
 ```bash
