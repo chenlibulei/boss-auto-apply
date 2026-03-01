@@ -60,10 +60,23 @@ class BossAutoApply:
         time.sleep(TIMING['pageLoadWait'] / 1000)
         
     def screenshot_job(self, index):
+        """截图保存岗位信息"""
         screenshot = pyautogui.screenshot()
         path = WORKSPACE_ROOT / f'boss-apply-{index}.png'
         screenshot.save(str(path))
+        info(f'截图已保存：{path.name}')
         return path
+    
+    def delete_screenshot(self, screenshot_path):
+        """删除截图文件"""
+        try:
+            if screenshot_path.exists():
+                screenshot_path.unlink()
+                info(f'截图已删除：{screenshot_path.name}')
+            else:
+                warning(f'截图文件不存在：{screenshot_path}')
+        except Exception as e:
+            error(f'删除截图失败：{e}')
         
     def identify_job_with_browser(self):
         """使用 browser 工具识别岗位信息（通过 OpenClaw）"""
@@ -240,6 +253,9 @@ class BossAutoApply:
             
             # TODO: 集成真实 API 识别
             # 当前使用模拟数据
+            
+            # TODO: 集成真实 API 识别
+            # 当前使用模拟数据
             job_info = {
                 'company': f'测试公司{i}',
                 'position': '前端开发工程师',
@@ -266,6 +282,9 @@ class BossAutoApply:
                 print(f'步骤 3：生成招呼语...')
                 greeting = self.generate_greeting(job_info)
                 
+                # 删除截图（识别完成后）
+                self.delete_screenshot(screenshot_path)
+                
                 if self.mode == 'test':
                     print(f'\n【招呼语预览】')
                     print(f'{greeting[:150]}...')
@@ -284,6 +303,8 @@ class BossAutoApply:
                     # 正式模式 apply_job 已处理滚动和点击，不需要再调用 next_job()
             else:
                 print(f'[SKIP] 不符合条件：{reason}')
+                # 删除截图（识别完成后）
+                self.delete_screenshot(screenshot_path)
                 self.save_result(job_info, f'不符合-{reason}')
                 # 不符合也需要滚动到下一个
                 if i < self.count:
