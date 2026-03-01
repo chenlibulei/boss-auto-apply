@@ -80,19 +80,72 @@ class BossAutoApply:
         
     def identify_job_with_browser(self):
         """使用 browser 工具识别岗位信息（通过 OpenClaw）"""
-        print('  正在调用 browser snapshot 识别岗位信息...')
+        info('正在调用 browser snapshot 识别岗位信息...')
         
         # 调用 browser snapshot
-        from browser import snapshot
         try:
+            from browser import snapshot
             result = snapshot(refs='aria')
             # 解析返回的页面信息
             job_info = self.parse_browser_snapshot(result)
             return job_info
         except Exception as e:
-            print(f'  browser snapshot 失败：{e}')
+            warning(f'browser snapshot 失败：{e}')
             return None
+    
+    def identify_job_with_api(self, screenshot_path):
+        """使用大模型 API 识别岗位信息"""
+        info('正在调用大模型 API 识别岗位信息...')
+        
+        try:
+            from scripts.api_client import call_image_api
             
+            # 识别提示词
+            prompt = """请详细识别这个 BOSS 直聘岗位详情页的所有信息，并以 JSON 格式返回：
+
+需要识别的信息：
+1. 公司名称（company）
+2. 岗位名称（position）
+3. 薪资范围（salary，如 "15-25K·13 薪"）
+4. 学历要求（education，如 "本科"）
+5. 城市（city，如 "杭州"）
+6. 经验要求（experience，如 "3-5 年"）
+7. 岗位职责（responsibilities，数组格式）
+8. 任职要求（requirements，数组格式）
+
+请只返回 JSON 数据，不要其他说明。格式如下：
+{
+  "company": "公司名称",
+  "position": "岗位名称",
+  "salary": "薪资范围",
+  "education": "学历要求",
+  "city": "城市",
+  "experience": "经验要求",
+  "responsibilities": ["职责 1", "职责 2"],
+  "requirements": ["要求 1", "要求 2"]
+}"""
+            
+            # 调用 API
+            result_text = call_image_api(str(screenshot_path), prompt)
+            
+            # 解析 JSON 结果
+            import json
+            # 尝试提取 JSON 部分（去除可能的 markdown 标记）
+            json_start = result_text.find('{')
+            json_end = result_text.rfind('}') + 1
+            if json_start >= 0 and json_end > json_start:
+                json_str = result_text[json_start:json_end]
+                job_info = json.loads(json_str)
+                info(f'API 识别成功：{job_info.get("company")} - {job_info.get("position")}')
+                return job_info
+            else:
+                warning('API 返回格式不正确')
+                return None
+                
+        except Exception as e:
+            error(f'大模型 API 识别失败：{e}')
+            return None
+    
     def parse_browser_snapshot(self, snapshot_data):
         """解析 browser snapshot 数据"""
         # 从 snapshot 中提取岗位信息
@@ -251,25 +304,26 @@ class BossAutoApply:
             info('步骤 2：识别岗位信息...')
             time.sleep(TIMING['apiLimitWait'] / 1000)
             
-            # TODO: 集成真实 API 识别
-            # 当前使用模拟数据
+            # 使用大模型识别岗位信息
+            job_info = self.identify_job_with_api(screenshot_path)
             
-            # TODO: 集成真实 API 识别
-            # 当前使用模拟数据
-            job_info = {
-                'company': f'测试公司{i}',
-                'position': '前端开发工程师',
-                'salary': '15-25K',
-                'salary_min': 15000,
-                'salary_max': 25000,
-                'education': '本科',
-                'city': '杭州',
-                'experience': '3-5 年',
-                'responsibilities': '负责前端开发',
-                'requirements': '熟练掌握 React/Vue'
-            }
-            
-            info(f'识别结果：{job_info["company"]} - {job_info["position"]} - {job_info["salary"]}')
+            if job_info:
+                info(f'识别结果：{job_info["company"]} - {job_info["position"]} - {job_info["salary"]}')
+            else:
+                # 如果 API 识别失败，使用模拟数据
+                warning('API 识别失败，使用模拟数据')
+                job_info = {
+                    'company': f'测试公司{i}',
+                    'position': '前端开发工程师',
+                    'salary': '15-25K',
+                    'salary_min': 15000,
+                    'salary_max': 25000,
+                    'education': '本科',
+                    'city': '杭州',
+                    'experience': '3-5 年',
+                    'responsibilities': '负责前端开发',
+                    'requirements': '熟练掌握 React/Vue'
+                }
             
             # 判断是否符合条件
             print(f'步骤 2：判断是否符合条件...')

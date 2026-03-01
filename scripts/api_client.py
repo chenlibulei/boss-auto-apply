@@ -48,13 +48,15 @@ def call_image_api(image_path, prompt):
     prompt: 识别提示词
     
     返回：
-    dict - 识别结果
+    str - 识别结果文本
     """
     check_api_key()
     
     try:
         import dashscope
         from dashscope import MultiModalConversation
+        
+        info(f'正在调用图像识别 API: {image_path}')
         
         # 调用 API
         response = MultiModalConversation.call(
@@ -70,11 +72,15 @@ def call_image_api(image_path, prompt):
         )
         
         if response.status_code == 200:
-            return response.output.choices[0].message.content[0]['text']
+            result = response.output.choices[0].message.content[0]['text']
+            info(f'图像识别成功')
+            return result
         else:
+            error(f'API 调用失败：{response.code} - {response.message}')
             raise Exception(f'API 调用失败：{response.code} - {response.message}')
     
     except ImportError:
+        error('未安装 dashscope，请运行：pip install dashscope')
         raise ImportError('请安装 dashscope: pip install dashscope')
 
 
