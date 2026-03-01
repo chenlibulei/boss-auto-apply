@@ -1,0 +1,27 @@
+{
+  "coordinates": {
+    "returnButton": { "x": 23, "y": 57, "description": "返回按钮 - 仅在发送消息后使用" },
+    "jobCard": { "x": 432, "y": 340, "description": "职位卡片 - 固定点击位置" },
+    "immediateChat": { "x": 1336, "y": 333, "description": "立即沟通按钮" },
+    "continueChat": { "x": 1014, "y": 797, "description": "继续沟通按钮" },
+    "chatInput": { "x": 845, "y": 1299, "description": "聊天输入框" },
+    "messageButton": { "x": 1275, "y": 113, "description": "消息按钮 - 检查 HR 回复" }
+  },
+  "scroll": {
+    "distance": 180,
+    "description": "卡片高度 134px + margin-top 16px + 间距 = 180px"
+  },
+  "timing": {
+    "pageLoadWait": 2000,
+    "apiLimitWait": 3000,
+    "afterClickWait": 1000,
+    "afterContinueWait": 1500,
+    "beforePasteWait": 500,
+    "afterPasteWait": 500,
+    "afterSendWait": 1000,
+    "afterReturnWait": 1500,
+    "afterScrollWait": 1000,
+    "batchRestInterval": 15000,
+    "batchSize": 5
+  }
+}

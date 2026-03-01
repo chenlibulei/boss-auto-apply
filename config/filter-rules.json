@@ -1,0 +1,33 @@
+{
+  "salary": {
+    "minUpperLimit": 14000,
+    "description": "薪资上限必须≥14k"
+  },
+  "cities": {
+    "preferred": ["杭州", "宁波", "温州", "金华", "苏州", "丽水"],
+    "region": "浙江省内或周边",
+    "exclude": ["偏远地区"]
+  },
+  "companyTypes": {
+    "exclude": ["大厂", "外包"]
+  },
+  "jobTypes": {
+    "include": ["正式"],
+    "exclude": ["实习", "兼职"]
+  },
+  "education": {
+    "friendly": ["不限", "大专", "本科"],
+    "exclude": ["硕士以上"]
+  },
+  "blacklist": {
+    "bigTech": [
+      "阿里", "腾讯", "字节", "华为", "美团", "京东", "拼多多", "网易", "快手", "哔哩哔哩"
+    ],
+    "outsourcing": [
+      "中软国际", "软通动力", "文思海辉", "法本信息", "外服", "人瑞", "中科软", "海隆软件"
+    ]
+  },
+  "preferredIndustries": [
+    "电商", "AI", "人工智能", "医疗", "健康", "互联网"
+  ]
+}

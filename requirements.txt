@@ -1,0 +1,14 @@
+# BOSS 直聘自动投递 - Python 依赖
+
+# 核心依赖
+pyautogui>=0.9.54
+pyperclip>=1.8.0
+pillow>=10.0.0
+
+# API 客户端（可选，用于图像识别和招呼语生成）
+dashscope>=1.14.0
+python-dotenv>=1.0.0
+
+# 开发依赖（可选）
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
