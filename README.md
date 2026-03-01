@@ -2,86 +2,247 @@
 
 💼 自动筛选并投递符合前端开发条件的 BOSS 直聘岗位
 
----
-
-## 功能特点
-
-- ✅ 自动识别岗位信息（公司、薪资、学历、技术要求等）
-- ✅ 智能匹配筛选（薪资≥14k、杭州及周边、排除大厂/外包）
-- ✅ 个性化招呼语生成（基于岗位职责和黎哥简历匹配）
-- ✅ 支持测试模式（只生成不投递）和正式投递模式
-- ✅ 自动记录投递结果（CSV 格式）
-- ✅ API 限流保护（避免频繁调用）
+**版本：** v1.0.4  
+**状态：** ✅ 可用（Alpha）  
+**适用：** OpenClaw 用户
 
 ---
 
-## 快速开始
+## 🎯 功能特点
 
-### 前置条件
+- ✅ **自动识别岗位信息** - 公司、薪资、学历、技术要求等
+- ✅ **智能匹配筛选** - 薪资、城市、公司类型、学历等
+- ✅ **个性化招呼语生成** - 基于岗位职责和用户简历匹配
+- ✅ **支持测试/正式模式** - 测试模式只生成不投递
+- ✅ **自动记录投递结果** - CSV 格式，方便统计
+- ✅ **HR 消息检查与回复** - 自动检查并回复 HR 消息
+- ✅ **API 限流保护** - 避免频繁调用被封禁
 
-1. 已安装 Python 3.8+
-2. 已安装依赖：
-   ```bash
-   pip install pyautogui pyperclip pillow requests
-   ```
-3. BOSS 直聘网页已打开并登录
-4. 屏幕分辨率与坐标配置匹配（或自行校准）
+---
 
-### 状态
+## 🚀 快速开始
 
-✅ **脚本框架已完成**
-- 坐标点击、滚动功能正常
-- 截图保存功能正常
-- CSV 记录生成正常
-- 招呼语生成正常
-- 筛选条件判断逻辑已完成
-
-⚠️ **待集成**
-- 图像识别 API 调用（需要配置 API key）
-- 真实的岗位信息解析
-
-### 测试模式
-
-先测试 5 个岗位，查看匹配结果和招呼语：
+### 1. 安装依赖
 
 ```bash
 cd skills/boss-auto-apply
+pip install -r requirements.txt
+```
+
+**依赖说明：**
+- `pyautogui` - 鼠标键盘自动化
+- `pyperclip` - 剪贴板操作
+- `pillow` - 图像处理
+- `dashscope` - 百炼 API 客户端（可选，用于图像识别和招呼语生成）
+- `python-dotenv` - 环境变量管理
+
+### 2. 配置 API Key（可选）
+
+如果需要使用图像识别和个性化招呼语生成：
+
+```bash
+# 复制配置模板
+cp config/.env.example config/.env
+
+# 编辑 .env 文件，填入你的 API Key
+# 获取地址：https://dashscope.console.aliyun.com/apiKey
+DASHSCOPE_API_KEY=sk-your-api-key-here
+```
+
+**注意：** 不配置 API Key 也可以使用，但会使用模板生成招呼语。
+
+### 3. 个性化配置
+
+**复制用户配置模板：**
+```bash
+cp config/user_config.example.json config/user_config.json
+```
+
+**编辑 `config/user_config.json`：**
+
+```json
+{
+  "user": {
+    "name": "黎哥",              // 你的称呼
+    "title": "前端开发组长",       // 当前职位
+    "years_of_experience": 11,   // 工作年限
+    "dev_years": 6               // 开发年限
+  },
+  "job_preferences": {
+    "salary": {
+      "min_upper_limit": 14000   // 最低薪资上限（元）
+    },
+    "cities": {
+      "preferred": ["杭州", "宁波"]  // 优先城市
+    }
+  },
+  "skills": {
+    "proficient": ["React", "Vue"],  // 熟练掌握的技能
+    "familiar": ["Node.js"]          // 熟悉的技能
+  },
+  "greeting_style": {
+    "assistant_name": "小虾"         // AI 助手名称
+  }
+}
+```
+
+**配置说明：**
+- `user.name` - 你的称呼（如"黎哥"）
+- `job_preferences.salary.min_upper_limit` - 最低薪资要求
+- `job_preferences.cities.preferred` - 期望工作城市
+- `skills.proficient` - 你的核心技能栈
+- `greeting_style.assistant_name` - AI 助手名称
+
+### 4. 校准坐标
+
+**重要：** 首次使用前必须校准坐标！
+
+```bash
+# 打开 BOSS 直聘网页
+# 鼠标移动到各个按钮位置，记录坐标
+
+# 编辑 config/coordinates.json
+{
+  "jobCard": { "x": 432, "y": 340 },      // 职位卡片
+  "immediateChat": { "x": 1336, "y": 333 }, // 立即沟通
+  "chatInput": { "x": 845, "y": 1299 }    // 聊天输入框
+}
+```
+
+**坐标校准工具：**
+```python
+import pyautogui
+print(pyautogui.position())  # 移动鼠标查看坐标
+```
+
+### 5. 运行测试
+
+**测试模式（只识别不投递）：**
+```bash
 python scripts/boss_auto_apply.py --mode test --count 5
 ```
 
-### 正式投递
-
-确认测试结果后，开始正式投递：
-
+**正式投递：**
 ```bash
 python scripts/boss_auto_apply.py --mode apply --count 6
 ```
 
 ---
 
-## 筛选条件
+## 📋 筛选条件
 
-| 条件 | 要求 | 排除 |
-|------|------|------|
-| 💰 薪资 | 上限≥14k | 上限<14k |
-| 📍 城市 | 杭州、宁波、温州、金华、苏州、丽水等浙江省内或周边 | 偏远地区 |
-| ❌ 公司类型 | - | 大厂、外包 |
-| ❌ 岗位类型 | 正式 | 实习、兼职 |
-| 📚 学历 | 友好 | 要求硕士以上 |
+所有筛选条件可在 `config/user_config.json` 中配置：
 
-### 大厂黑名单
+| 条件 | 默认值 | 配置项 |
+|------|--------|--------|
+| 💰 薪资 | 上限≥14k | `job_preferences.salary.min_upper_limit` |
+| 📍 城市 | 杭州及周边 | `job_preferences.cities.preferred` |
+| ❌ 公司类型 | 排除大厂/外包 | `blacklist.big_tech` / `blacklist.outsourcing` |
+| ❌ 岗位类型 | 正式岗 | `job_preferences.job_types` |
+| 📚 学历 | 不要求硕士以上 | `job_preferences.education` |
+
+### 公司黑名单（可配置）
+
+**大厂黑名单：**
 阿里、腾讯、字节、华为、美团、京东、拼多多、网易、快手、哔哩哔哩
 
-### 外包黑名单
+**外包黑名单：**
 中软国际、软通动力、文思海辉、法本信息、外服、人瑞、中科软、海隆软件
 
 ---
 
-## 坐标配置
+## 🤖 招呼语生成
 
-如果点击位置不准确，需要校准坐标：
+### 生成方式
 
-编辑 `config/coordinates.json`：
+**方式一：大模型生成（推荐）**
+- 需要配置 API Key
+- 基于岗位职责和用户简历个性化生成
+- 自动匹配技能点
+
+**方式二：模板生成（回退方案）**
+- 无需 API Key
+- 使用通用模板
+- 根据岗位名称突出对应技能
+
+### 招呼语风格（可配置）
+
+在 `config/user_config.json` 中配置：
+
+```json
+{
+  "greeting_style": {
+    "assistant_name": "小虾",
+    "tone": "专业、真诚",
+    "avoid_words": ["精通", "专家", "大师", "顶尖"],
+    "preferred_words": ["熟练掌握", "熟悉", "有经验"]
+  }
+}
+```
+
+---
+
+## 📁 项目结构
+
+```
+boss-auto-apply/
+├── SKILL.md                          # OpenClaw 技能说明
+├── README.md                         # 本文件
+├── requirements.txt                  # Python 依赖
+├── config/
+│   ├── .env.example                  # API 配置模板
+│   ├── coordinates.json              # 坐标配置
+│   ├── filter-rules.json             # 筛选规则
+│   └── user_config.example.json      # 用户配置模板 ⭐
+├── scripts/
+│   ├── boss_auto_apply.py            # 主脚本
+│   ├── salary_parser.py              # 薪资解析
+│   ├── logger.py                     # 日志系统
+│   ├── greeting_generator.py         # 招呼语生成
+│   ├── api_client.py                 # API 客户端
+│   └── check_message.py              # 消息检查
+├── templates/
+│   └── greeting-template.md          # 招呼语模板
+└── references/
+    └── resume.md                     # 简历信息（可替换）
+```
+
+---
+
+## 🔧 高级配置
+
+### 日志系统
+
+日志文件保存在 `logs/` 目录：
+
+```bash
+logs/boss-auto-apply-2026-03-01.log
+```
+
+**日志级别：**
+- DEBUG - 调试信息
+- INFO - 普通信息
+- WARNING - 警告
+- ERROR - 错误
+- CRITICAL - 严重错误
+
+### 投递记录
+
+投递记录保存在 workspace 根目录：
+
+```bash
+boss-apply-2026-03-01.csv
+```
+
+**CSV 格式：**
+```csv
+日期，公司，岗位，薪资，学历，状态，招呼语
+2026-03-01，某某科技，前端开发工程师，15-25K，本科，已投递，[已保存]
+```
+
+### 坐标配置
+
+所有坐标在 `config/coordinates.json` 中配置：
 
 ```json
 {
@@ -90,7 +251,8 @@ python scripts/boss_auto_apply.py --mode apply --count 6
     "jobCard": { "x": 432, "y": 340 },
     "immediateChat": { "x": 1336, "y": 333 },
     "continueChat": { "x": 1014, "y": 797 },
-    "chatInput": { "x": 845, "y": 1299 }
+    "chatInput": { "x": 845, "y": 1299 },
+    "messageButton": { "x": 1275, "y": 113 }
   },
   "scroll": {
     "distance": 180
@@ -98,191 +260,107 @@ python scripts/boss_auto_apply.py --mode apply --count 6
 }
 ```
 
-### 校准方法
+---
 
-1. 打开 BOSS 直聘岗位列表页
-2. 运行以下命令测试点击：
-   ```python
-   import pyautogui
-   pyautogui.click(432, 340)  # 应该点击第一个职位卡片
-   ```
-3. 根据实际点击位置调整坐标
+## ⚠️ 注意事项
+
+### 安全提示
+
+1. **不要分享 API Key** - 将 `.env` 文件添加到 `.gitignore`
+2. **不要分享个人信息** - 将 `user_config.json` 添加到 `.gitignore`
+3. **每日投递限制** - 建议不超过 20 个，避免被平台限制
+4. **屏幕分辨率** - 坐标基于特定分辨率，变化后需重新校准
+
+### 常见问题
+
+**Q: 点击位置不准确？**
+A: 重新校准坐标，编辑 `config/coordinates.json`
+
+**Q: 薪资解析失败？**
+A: 检查薪资格式，支持 "15-25K"、"15-25K·13 薪" 等
+
+**Q: 招呼语生成失败？**
+A: 检查 API Key 配置，或切换到模板模式
+
+**Q: 网络超时？**
+A: 检查网络连接，或增加超时时间
 
 ---
 
-## 输出文件
+## 🛠️ 待开发功能
 
-### 投递记录
+以下功能已规划但尚未实现：
 
-位置：`workspace/boss-apply-YYYY-MM-DD.csv`
-
-格式：
-```csv
-日期，公司，岗位，薪资，学历，状态，招呼语
-2026-03-01，高帆破浪科技，初级前端开发工程师，15-30K，本科，已投递，[已保存]
-2026-03-01，XX 科技，前端开发，10-15K，本科，不符合 - 薪资上限<14k,
-```
-
-### 岗位截图
-
-位置：`workspace/boss-apply-{1-6}.png`
-
-每个岗位投递前都会截图保存，用于识别和记录。
+- [ ] 图像识别气泡检测（检测未读消息）
+- [ ] 公司去重逻辑（避免重复投递）
+- [ ] 错误处理与重试机制
+- [ ] 智能回复（根据 HR 消息内容）
+- [ ] 统计报告（投递成功率等）
+- [ ] 坐标校准工具（GUI）
 
 ---
 
-## 安全限制
+## 📝 更新日志
 
-- ️ 每日最多投递 20 个岗位（避免被平台限制）
-- ⚠️ 同一公司不重复投递
-- ⚠️ 每识别 5 个岗位自动休息 15 秒（API 限流）
-- ⚠️ 每小时最多识别 100 个岗位
+### v1.0.4 (2026-03-01)
+- ✅ 新增：薪资解析功能
+- ✅ 新增：日志系统
+- ✅ 新增：大模型招呼语生成
+- ✅ 新增：用户配置文件
+- ✅ 新增：API 客户端
+- ⏳ 待开发：错误处理
 
----
+### v1.0.3 (2026-03-01)
+- ✅ 新增：消息检查与回复
 
-## 招呼语生成
+### v1.0.2 (2026-03-01)
+- ✅ 修复：滚动前先移动到卡片位置
 
-### 技术栈描述规范
-
-| 熟练度 | 使用场景 |
-|--------|----------|
-| 熟练掌握 | React、Vue、TypeScript、ThreeJs、CesiumJs、Echarts |
-| 熟悉 | 其他知道的技术 |
-| 有实际项目经验 | 所有做过的项目技术 |
-| 擅长 | 架构设计、性能优化、团队管理 |
-
-### 禁用词汇
-
-❌ 精通、专家、大师、顶尖
-
-### 推荐词汇
-
-✅ 熟练掌握、熟悉、有经验、做过、擅长
-
----
-
-## 故障处理
-
-### 点击位置不准确
-
-**问题：** 点击后没有反应或点错位置
-
-**解决：** 校准坐标配置
-```bash
-# 测试点击
-python -c "import pyautogui; pyautogui.click(432, 340)"
-```
-
-### 滚动后位置不对
-
-**问题：** 滚动后没有对准下一个岗位
-
-**解决：** 调整滚动距离
-```json
-{
-  "scroll": {
-    "distance": 180  // 尝试 170-190 之间的值
-  }
-}
-```
-
-### API 调用失败
-
-**问题：** 图像识别 API 返回错误
-
-**解决：** 
-1. 检查网络连接
-2. 增加等待时间
-3. 减少并发数量
-
-### 投递失败
-
-**问题：** 消息发送失败
-
-**解决：**
-1. 检查 BOSS 直聘是否已登录
-2. 检查聊天窗口是否正常打开
-3. 手动重试或跳过该岗位
-
----
-
-## 使用示例
-
-### 示例 1：测试 5 个岗位
-
-```bash
-python scripts/boss_auto_apply.py --mode test --count 5
-```
-
-输出：
-```
-[岗位 1] 符合条件
-招呼语：您好，我是小🦞虾，黎哥的 AI 助手...
-
-[岗位 2] 不符合条件：薪资上限<14k
-
-[岗位 3] 符合条件
-招呼语：您好，我是小🦞虾，黎哥的 AI 助手...
-
-...
-
-执行完成！测试结果已保存
-```
-
-### 示例 2：正式投递 6 个
-
-```bash
-python scripts/boss_auto_apply.py --mode apply --count 6
-```
-
-输出：
-```
-[岗位 1] 投递完成！
-[岗位 2] 投递完成！
-...
-执行完成！共投递 6 个岗位
-结果已保存到：boss-apply-2026-03-01.csv
-```
-
-### 示例 3：查看投递记录
-
-```bash
-# Windows
-type workspace\boss-apply-2026-03-01.csv
-
-# Linux/Mac
-cat workspace/boss-apply-2026-03-01.csv
-```
-
----
-
-## 相关文件
-
-| 文件 | 说明 |
-|------|------|
-| `SKILL.md` | 技能说明文档 |
-| `config/coordinates.json` | 坐标配置 |
-| `config/filter-rules.json` | 筛选规则 |
-| `templates/greeting-template.md` | 招呼语模板 |
-| `scripts/boss_auto_apply.py` | 主脚本 |
-| `workspace/boss-apply-YYYY-MM-DD.csv` | 投递记录 |
-
----
-
-## 更新日志
+### v1.0.1 (2026-03-01)
+- ✅ 修复：添加滚动和点击下一个
 
 ### v1.0.0 (2026-03-01)
-- ✅ 初始版本发布
-- ✅ 支持测试模式和正式投递模式
-- ✅ 自动识别岗位信息
-- ✅ 个性化招呼语生成
-- ✅ 坐标配置化
-- ✅ 筛选规则配置化
-- ✅ API 限流保护
-- ✅ 投递记录保存
+- ✅ 初始版本
 
 ---
 
-## 联系方式
+## 🤝 贡献指南
 
-如有问题或建议，请联系用户。
+欢迎提交 Issue 和 Pull Request！
+
+**开发环境设置：**
+```bash
+git clone https://github.com/chenlibulei/boss-auto-apply.git
+cd boss-auto-apply
+pip install -r requirements.txt
+pip install pytest  # 可选，用于测试
+```
+
+---
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 📞 支持
+
+**问题反馈：** https://github.com/chenlibulei/boss-auto-apply/issues
+
+**GitHub 仓库：** https://github.com/chenlibulei/boss-auto-apply
+
+**OpenClaw 文档：** https://docs.openclaw.ai
+
+---
+
+## 🌟 致谢
+
+- OpenClaw 框架
+- 百炼 DashScope API
+- 所有贡献者
+
+---
+
+**最后更新：** 2026-03-01  
+**维护者：** @chenlibulei

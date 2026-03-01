@@ -1,0 +1,108 @@
+# 用户配置文件
+
+# 复制此文件为 user_config.json 并修改为你的个人信息
+
+{
+  "user": {
+    "name": "黎哥",
+    "title": "前端开发组长",
+    "years_of_experience": 11,
+    "dev_years": 6
+  },
+  
+  "job_preferences": {
+    "salary": {
+      "min_upper_limit": 14000,
+      "currency": "K",
+      "description": "最低薪资上限要求（单位：元）"
+    },
+    "cities": {
+      "preferred": ["杭州", "宁波", "温州", "金华", "苏州", "丽水"],
+      "region": "浙江省内或周边",
+      "description": "优先城市列表"
+    },
+    "education": {
+      "friendly": ["不限", "大专", "本科"],
+      "exclude": ["硕士以上"],
+      "description": "学历要求"
+    },
+    "job_types": {
+      "include": ["正式"],
+      "exclude": ["实习", "兼职"],
+      "description": "岗位类型"
+    }
+  },
+  
+  "skills": {
+    "proficient": [
+      "React",
+      "Vue",
+      "TypeScript",
+      "Ant Design",
+      "ElementUI",
+      "ThreeJs",
+      "CesiumJs",
+      "Echarts",
+      "微信小程序",
+      "支付宝小程序"
+    ],
+    "familiar": [
+      "Node.js",
+      "Python",
+      "Webpack",
+      "Vite"
+    ],
+    "description": "技术栈列表"
+  },
+  
+  "abilities": [
+    "从 0 到 1 搭建前端系统架构",
+    "前端整体技术架构设计与选型",
+    "制定前端编码规范与技术文档标准",
+    "团队管理与建设",
+    "任务分配、进度管理、代码审查"
+  ],
+  
+  "projects": [
+    "金赋水工业互联网平台（前端架构设计）",
+    "华峰集团前端系统（从 0 到 1 搭建）",
+    "城安智联前端项目（从 0 到 1 搭建）",
+    "数据可视化、3D 模型展示项目",
+    "监控平台、运维后台管理系统",
+    "小程序开发与迭代"
+  ],
+  
+  "greeting_style": {
+    "assistant_name": "小虾",
+    "tone": "专业、真诚",
+    "avoid_words": ["精通", "专家", "大师", "顶尖"],
+    "preferred_words": ["熟练掌握", "熟悉", "有经验", "做过", "擅长"],
+    "description": "招呼语风格配置"
+  },
+  
+  "blacklist": {
+    "big_tech": [
+      "阿里",
+      "腾讯",
+      "字节",
+      "华为",
+      "美团",
+      "京东",
+      "拼多多",
+      "网易",
+      "快手",
+      "哔哩哔哩"
+    ],
+    "outsourcing": [
+      "中软国际",
+      "软通动力",
+      "文思海辉",
+      "法本信息",
+      "外服",
+      "人瑞",
+      "中科软",
+      "海隆软件"
+    ],
+    "description": "公司黑名单"
+  }
+}
