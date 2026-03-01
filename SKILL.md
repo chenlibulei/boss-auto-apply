@@ -40,16 +40,22 @@ metadata:
    pip install -r requirements.txt
    ```
 
-2. **配置 API Key（可选）**
+2. **运行配置向导（推荐）**
    ```bash
-   cp config/.env.example config/.env
-   # 编辑 .env 填入 DASHSCOPE_API_KEY
+   python setup.py
    ```
+   
+   **向导会帮助你配置：**
+   - 选择图像识别模型（阿里云/OpenAI/Claude/本地）
+   - 选择文本生成模型
+   - 配置 API Key
+   - 配置个人信息（称呼、薪资、城市等）
 
-3. **个性化配置**
+3. **手动配置（可选）**
    ```bash
+   cp config/ai_models.env config/.env
    cp config/user_config.example.json config/user_config.json
-   # 编辑 user_config.json 填入你的信息
+   # 编辑配置文件
    ```
 
 4. **校准坐标**

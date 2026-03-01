@@ -36,12 +36,85 @@ git clone https://github.com/chenlibulei/boss-auto-apply.git
 cd boss-auto-apply
 pip install -r requirements.txt
 
-# 3. 配置个人信息
-cp config/user_config.example.json config/user_config.json
-# 编辑 user_config.json
+# 3. 运行配置向导（推荐）
+python setup.py
 
 # 4. 开始使用
 python scripts/boss_auto_apply.py --mode test --count 5
+```
+
+---
+
+### 🎯 配置向导（推荐）
+
+**首次使用建议运行配置向导：**
+
+```bash
+python setup.py
+```
+
+**向导会帮助你配置：**
+
+1. ✅ **选择图像识别模型提供商**
+   - 阿里云百炼 (qwen-vl-plus) - 推荐
+   - OpenAI (gpt-4o)
+   - Anthropic (Claude 3.5)
+   - 本地模型 (Ollama)
+
+2. ✅ **选择文本生成模型提供商**
+   - 阿里云百炼 (qwen3.5-plus)
+   - OpenAI (gpt-4o-mini)
+   - Anthropic (Claude 3.5)
+   - 本地模型
+
+3. ✅ **配置 API Key**
+   - 根据选择的提供商配置对应的 API Key
+
+4. ✅ **配置个人信息**
+   - 你的称呼
+   - 当前职位
+   - 工作年限
+   - 期望城市
+   - 核心技能
+   - AI 助手名称
+
+**配置完成后会自动保存：**
+- `config/.env` - AI 模型配置
+- `config/user_config.json` - 个人信息配置
+- `.gitignore` - 保护敏感信息
+
+---
+
+### 📝 手动配置
+
+如果不想使用配置向导，可以手动配置：
+
+**1. 复制配置模板**
+```bash
+cp config/ai_models.env config/.env
+cp config/user_config.example.json config/user_config.json
+```
+
+**2. 编辑配置文件**
+
+**config/.env:**
+```bash
+# 选择模型提供商
+IMAGE_MODEL_PROVIDER=dashscope
+TEXT_MODEL_PROVIDER=dashscope
+
+# 配置 API Key
+DASHSCOPE_API_KEY=sk-your-api-key-here
+```
+
+**config/user_config.json:**
+```json
+{
+  "user": {
+    "name": "你的名字",
+    "title": "前端开发工程师"
+  }
+}
 ```
 
 ---
